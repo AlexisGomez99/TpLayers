@@ -7,7 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,7 +24,7 @@ public class AgregarParticipante extends JFrame {
 	private JTextField telefono;
 	private JTextField region;
 
-	public AgregarParticipante(RepositorioDeParticipante jdbcP) throws SQLException {
+	public AgregarParticipante(RepositorioDeParticipante jdbcP){
 		setupUIComponents();
 		participantedb= jdbcP;
 	}
@@ -52,11 +51,7 @@ public class AgregarParticipante extends JFrame {
 		JButton botonCargar = new JButton("Cargar");
 		botonCargar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					onBotonCargar();
-				} catch (SQLException e1) {
-					throw new RuntimeException(e1);
-				}
+				onBotonCargar();
 			}
 		});
 		contentPane.add(botonCargar);
@@ -67,33 +62,16 @@ public class AgregarParticipante extends JFrame {
 	}
 
 	
-	private void onBotonCargar() throws SQLException {
-		 if (nombre.getText().equals("")) {
-			 JOptionPane.showMessageDialog(this, "Debe cargar un nombre");
-			 return;
-		 }
-		 if (telefono.getText().equals("")) {
-			 JOptionPane.showMessageDialog(this, "Debe cargar un telefono");
-			 return;
-		 }
-		 if (!validarTelefono(telefono.getText())) {
-			 JOptionPane.showMessageDialog(this, "El teléfono debe ingresarse de la siguiente forma: NNNN-NNNNNN");
-		  	 return;
-		 }
-		 if (!region.getText().equals("China") && !region.getText().equals("US") && !
-		 region.getText().equals("Europa")) {
-			 JOptionPane.showMessageDialog(this, "Region desconocida. Las conocidas son: China, US, Europa");
-			 return;
-		 }
+	private void onBotonCargar(){
+		 try {
 		 Participante participante = new Participante(nombre.getText(),telefono.getText(),region.getText());
 		 this.participantedb.agregarPersona(participante);
-		 
+		 } catch(RuntimeException e) {
+			 JOptionPane.showInputDialog(e.getMessage());
+		 }
 		 dispose();
 	 }
 
 	
-	private boolean validarTelefono(String telefono) {
-		String regex = "\\d{4}-\\d{6}";
-		return telefono.matches(regex);
-	}
+	
 }
