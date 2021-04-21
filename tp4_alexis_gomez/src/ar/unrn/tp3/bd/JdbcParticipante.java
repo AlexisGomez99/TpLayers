@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import ar.unrn.tp3.modelo.Participante;
 import ar.unrn.tp3.modelo.RepositorioDeParticipante;
+import ar.unrn.tp3.modelo.SinAccesoABDException;
 
 public class JdbcParticipante implements RepositorioDeParticipante{
 
@@ -23,7 +24,7 @@ public class JdbcParticipante implements RepositorioDeParticipante{
 			 st.close();
 			 myConexion.close();
 		} catch (ClassNotFoundException | SQLException e) {
-			new RuntimeException("No se pudo conectar con la base de datos",e);
+			new SinAccesoABDException();
 		}
 		
 	 }
